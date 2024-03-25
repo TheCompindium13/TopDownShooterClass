@@ -5,13 +5,21 @@ using UnityEngine;
 public class HealthBehaviour : MonoBehaviour
 {
     [SerializeField]
-    private float _health; 
-
+    private float _health;
+    [SerializeField]
+    private float _maxHealth;
     public float Health
     {
         get
         {
             return _health;
+        }
+    }
+    public float MaxHealth
+    {
+        get
+        {
+            return _maxHealth;
         }
     }
 

@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
+[RequireComponent(typeof(Rigidbody))]
 public class EnemyMovementBehaviour : MonoBehaviour
 {
-    private NavMeshAgent _navAgent;
-    private NavMeshPath _navPath;
+    private Rigidbody _rigidbody;
     [Tooltip("The object the enemy will be seeking towards.")]
     [SerializeField]
     private GameObject _target;
@@ -32,9 +31,8 @@ public class EnemyMovementBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Get a reference to the attached _navAgent
-        _navAgent = GetComponent<NavMeshAgent>();
-        _navPath = GetComponent<NavMeshPath>();
+        //Get a reference to the attached rigidbody
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -42,10 +40,16 @@ public class EnemyMovementBehaviour : MonoBehaviour
         //If a target hasn't been set return
         if (!_target)
             return;
-        _navAgent.SetDestination(_target.transform.position);
+
+        //Find the direction to travel towards to reach the target
+        Vector3 moveDir = _target.transform.position - transform.position;
+        //Scale the direction by the move force
+        Vector3 moveForce = moveDir * _moveForce;
+        //Add the force to the rigidbody to move the object
+        _rigidbody.AddForce(moveForce);
 
         //If the velocity goes over the max magnitude, clamp it
-        if (_navAgent.velocity.magnitude > _maxVelocity)
-            _navAgent.velocity = _navAgent.velocity.normalized * _maxVelocity;
+        if (_rigidbody.velocity.magnitude > _maxVelocity)
+            _rigidbody.velocity = _rigidbody.velocity.normalized * _maxVelocity;
     }
 }

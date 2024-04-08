@@ -41,7 +41,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
             //Create a rotation from the player's forward to the look direction
             Quaternion rotation = Quaternion.LookRotation(lookDir);
             //Set the rotation to be the new rotation found
-            _rigidbody.velocity = Vector3.zero;
             _rigidbody.MoveRotation(rotation);
         }
     }

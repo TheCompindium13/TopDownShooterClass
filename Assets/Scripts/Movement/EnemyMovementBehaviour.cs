@@ -17,14 +17,15 @@ public class EnemyMovementBehaviour : MonoBehaviour
     [Tooltip("The maximum magnitude this enemy's velocity can have.")]
     [SerializeField]
     private float _maxVelocity;
-    private NavMeshPath _meshPath;
+    private NavMeshAgent _navAgent;
+    private NavMeshPath _navPath;
     public GameObject Target
     {
         get
         {
             return _target;
         }
-        set 
+        set
         {
             _target = value;
         }
@@ -33,7 +34,8 @@ public class EnemyMovementBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NavMesh.CalculatePath(transform.position, _target.transform.position,-1, _meshPath);
+        _navAgent = GetComponent<NavMeshAgent>();
+        _navPath = GetComponent<NavMeshPath>();
         //Get a reference to the attached rigidbody
         _rigidbody = GetComponent<Rigidbody>();
     }
@@ -43,6 +45,7 @@ public class EnemyMovementBehaviour : MonoBehaviour
         //If a target hasn't been set return
         if (!_target)
             return;
+        _navAgent.SetDestination(_target.transform.position);
 
         //Find the direction to travel towards to reach the target
         Vector3 moveDir = _target.transform.position - transform.position;
@@ -52,6 +55,8 @@ public class EnemyMovementBehaviour : MonoBehaviour
         _rigidbody.AddForce(moveForce);
 
         //If the velocity goes over the max magnitude, clamp it
+        if (_navAgent.velocity.magnitude > _maxVelocity)
+            _navAgent.velocity = _navAgent.velocity.normalized * _maxVelocity;
         if (_rigidbody.velocity.magnitude > _maxVelocity)
             _rigidbody.velocity = _rigidbody.velocity.normalized * _maxVelocity;
     }

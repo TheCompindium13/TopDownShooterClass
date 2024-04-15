@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class EnemyMovementBehaviour : MonoBehaviour
@@ -15,7 +17,7 @@ public class EnemyMovementBehaviour : MonoBehaviour
     [Tooltip("The maximum magnitude this enemy's velocity can have.")]
     [SerializeField]
     private float _maxVelocity;
-
+    private NavMeshPath _meshPath;
     public GameObject Target
     {
         get
@@ -31,6 +33,7 @@ public class EnemyMovementBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        NavMesh.CalculatePath(transform.position, _target.transform.position,-1, _meshPath);
         //Get a reference to the attached rigidbody
         _rigidbody = GetComponent<Rigidbody>();
     }
